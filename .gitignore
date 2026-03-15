@@ -1,0 +1,7 @@
+*.log
+.env
+nextcloud_data/
+db_data/
+config/
+data/
+apps/

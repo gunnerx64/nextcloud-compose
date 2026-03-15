@@ -1,0 +1,35 @@
+# Nextcloud Docker Compose Setup
+
+Nextcloud running with Docker Compose, including MariaDB database and Redis cache.
+
+## Setup
+
+1. Copy environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` with secure passwords.
+
+3. Start the services:
+   ```bash
+   docker compose up -d
+   ```
+
+4. Access Nextcloud at http://localhost:8080
+
+## Services
+
+- **app**: Nextcloud (port 8080)
+- **db**: MariaDB database
+- **redis**: Cache server
+
+## Volumes
+
+- `nextcloud_data`: Nextcloud data
+- `db_data`: Database data
+
+## Customization
+
+- Custom apps: `./apps/`
+- Configuration: `./config/`

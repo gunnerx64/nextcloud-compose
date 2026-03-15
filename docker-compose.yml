@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: nextcloud_db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - nextcloud_network
+
+  redis:
+    image: redis:alpine
+    container_name: nextcloud_redis
+    restart: always
+    networks:
+      - nextcloud_network
+
+  app:
+    image: nextcloud:stable
+    container_name: nextcloud_app
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - nextcloud_data:/var/www/html
+      - ./apps:/var/www/html/custom_apps
+      - ./config:/var/www/html/config
+    environment:
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+      - REDIS_HOST=redis
+    networks:
+      - nextcloud_network
+
+volumes:
+  db_data:
+  nextcloud_data:
+
+networks:
+  nextcloud_network:
+    driver: bridge
