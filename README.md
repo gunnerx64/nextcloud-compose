@@ -9,7 +9,10 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
    cp .env.example .env
    ```
 
-2. Edit `.env` with secure passwords.
+2. Edit `.env` with secure passwords. Optionally set `DOCKER_PROXY` to use a local Docker registry (include trailing slash):
+   ```bash
+   DOCKER_PROXY=docker.company.local/docker/
+   ```
 
 3. Start the services:
    ```bash

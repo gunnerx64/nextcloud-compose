@@ -1,8 +1,8 @@
 services:
   db:
-    image: mariadb:10.11
+    image: ${DOCKER_PROXY}mariadb:10.11
     container_name: nextcloud_db
-    restart: always
+    restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
       - db_data:/var/lib/mysql
@@ -15,18 +15,18 @@ services:
       - nextcloud_network
 
   valkey:
-    image: valkey/valkey:alpine
+    image: ${DOCKER_PROXY}valkey/valkey:alpine
     container_name: nextcloud_valkey
-    restart: always
+    restart: unless-stopped
     networks:
       - nextcloud_network
 
   app:
-    image: nextcloud:stable
+    image: ${DOCKER_PROXY}nextcloud:stable
     container_name: nextcloud_app
-    restart: always
+    restart: unless-stopped
     ports:
-      - 8080:80
+      - 8080:8080
     depends_on:
       - db
       - valkey
