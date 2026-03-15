@@ -24,10 +24,12 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
 - **db**: MariaDB database
 - **valkey**: Cache server
 
-## Volumes
+## Data
 
-- `nextcloud_data`: Nextcloud data
-- `db_data`: Database data
+- `./data`: Nextcloud data
+- `./apps`: Custom apps
+- `./config`: Configuration files
+- `db_data`: Database data (Docker volume)
 
 ## Customization
 
