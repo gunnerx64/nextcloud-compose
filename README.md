@@ -1,6 +1,6 @@
 # Nextcloud Docker Compose Setup
 
-Nextcloud running with Docker Compose, including MariaDB database and Redis cache.
+Nextcloud running with Docker Compose, including MariaDB database and Valkey cache.
 
 ## Setup
 
@@ -22,7 +22,7 @@ Nextcloud running with Docker Compose, including MariaDB database and Redis cach
 
 - **app**: Nextcloud (port 8080)
 - **db**: MariaDB database
-- **redis**: Cache server
+- **valkey**: Cache server
 
 ## Volumes
 

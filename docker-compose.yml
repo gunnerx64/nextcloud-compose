@@ -14,9 +14,9 @@ services:
     networks:
       - nextcloud_network
 
-  redis:
-    image: redis:alpine
-    container_name: nextcloud_redis
+  valkey:
+    image: valkey/valkey:alpine
+    container_name: nextcloud_valkey
     restart: always
     networks:
       - nextcloud_network
@@ -29,7 +29,7 @@ services:
       - 8080:80
     depends_on:
       - db
-      - redis
+      - valkey
     volumes:
       - nextcloud_data:/var/www/html
       - ./apps:/var/www/html/custom_apps
@@ -39,7 +39,7 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=db
-      - REDIS_HOST=redis
+      - REDIS_HOST=valkey
       # S3 Object Storage configuration (uncomment to use external MinIO at s3.company.local)
       # - OBJECTSTORE_S3_HOST=s3.company.local
       # - OBJECTSTORE_S3_PORT=443
