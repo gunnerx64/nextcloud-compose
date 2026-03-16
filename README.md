@@ -9,9 +9,15 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
    cp .env.example .env
    ```
 
-2. Edit `.env` with secure passwords. Optionally set `DOCKER_PROXY` to use a local Docker registry (include trailing slash):
+2. Edit `.env` with secure passwords. Optionally set environment variables:
    ```bash
    DOCKER_PROXY=docker.company.local/docker/
+   ```
+   If you're behind a corporate proxy, also set proxy settings for the App Store:
+   ```bash
+   HTTP_PROXY=http://proxy.company.local:3128
+   HTTPS_PROXY=http://proxy.company.local:3128
+   NO_PROXY=localhost,127.0.0.1
    ```
 
 3. Start the services:
@@ -23,7 +29,7 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
    docker compose up -d
    ```
 
-4. Access Nextcloud at http://localhost:8080
+4. Access Nextcloud at http://localhost:8090
 
 ## Makefile Commands
 
@@ -40,12 +46,13 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
 
 ## Data
 
-- `./data`: Nextcloud data
+- `./data`: Nextcloud application files
+  - `./data/config/`: Configuration files
+  - `./data/data/`: User data
 - `./apps`: Custom apps
-- `./config`: Configuration files
 - `db_data`: Database data (Docker volume)
 
 ## Customization
 
 - Custom apps: `./apps/`
-- Configuration: `./config/`
+- Configuration: `./data/config/`

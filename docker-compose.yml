@@ -1,12 +1,13 @@
 services:
   db:
-    image: ${DOCKER_PROXY}mariadb:10.11
+    image: ${DOCKER_PROXY:-}mariadb:10.11
     container_name: nextcloud_db
     restart: unless-stopped
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
       - db_data:/var/lib/mysql
     environment:
+      - TZ=Asia/Baghdad
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud
@@ -15,31 +16,40 @@ services:
       - nextcloud_network
 
   valkey:
-    image: ${DOCKER_PROXY}valkey/valkey:alpine
+    image: ${DOCKER_PROXY:-}valkey/valkey:7.2-alpine
     container_name: nextcloud_valkey
     restart: unless-stopped
     networks:
       - nextcloud_network
 
   app:
-    image: ${DOCKER_PROXY}nextcloud:stable
+    image: ${DOCKER_PROXY:-}nextcloud:33.0.0
     container_name: nextcloud_app
     restart: unless-stopped
     ports:
-      - 8080:8080
+      - 8090:80
     depends_on:
       - db
       - valkey
     volumes:
       - ./data:/var/www/html
       - ./apps:/var/www/html/custom_apps
-      - ./config:/var/www/html/config
+    command: /bin/bash -c "chown -R www-data:www-data /var/www/html/custom_apps && exec apache2-foreground"
     environment:
+      - TZ=Asia/Baghdad
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=db
       - REDIS_HOST=valkey
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
+      # Proxy settings for external service access (uncomment if needed)
+      # - HTTP_PROXY=${HTTP_PROXY}
+      # - HTTPS_PROXY=${HTTPS_PROXY}
+      # - http_proxy=${HTTP_PROXY}
+      # - https_proxy=${HTTPS_PROXY}
+      # - NO_PROXY=localhost,127.0.0.1,db,valkey
+      # - no_proxy=localhost,127.0.0.1,db,valkey
       # S3 Object Storage configuration (uncomment to use external MinIO at s3.company.local)
       # - OBJECTSTORE_S3_HOST=s3.company.local
       # - OBJECTSTORE_S3_PORT=443
