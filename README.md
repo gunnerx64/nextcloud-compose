@@ -9,7 +9,11 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
    cp .env.example .env
    ```
 
-2. Edit `.env` with secure passwords. Optionally set environment variables:
+2. Edit `.env` with secure passwords. Generate a secure JWT secret for OnlyOffice:
+   ```bash
+   openssl rand -base64 32
+   ```
+   Set the output to `ONLYOFFICE_JWT_SECRET`. Optionally set environment variables:
    ```bash
    DOCKER_PROXY=docker.company.local/docker/
    ```
@@ -40,9 +44,10 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
 
 ## Services
 
-- **app**: Nextcloud (port 8080)
+- **app**: Nextcloud (port 8090)
 - **db**: MariaDB database
 - **valkey**: Cache server
+- **onlyoffice**: Document editing server (port 8081)
 
 ## Data
 
@@ -56,3 +61,12 @@ Nextcloud running with Docker Compose, including MariaDB database and Valkey cac
 
 - Custom apps: `./apps/`
 - Configuration: `./data/config/`
+
+## OnlyOffice Configuration
+
+After starting services, configure OnlyOffice in Nextcloud:
+
+1. Install the "OnlyOffice" app from the Nextcloud App Store
+2. Go to Settings → Administration → OnlyOffice
+3. Set Document Server URL to `http://onlyoffice:80`
+4. Set the JWT Secret to match your `ONLYOFFICE_JWT_SECRET` value

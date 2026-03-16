@@ -48,8 +48,8 @@ services:
       # - HTTPS_PROXY=${HTTPS_PROXY}
       # - http_proxy=${HTTP_PROXY}
       # - https_proxy=${HTTPS_PROXY}
-      # - NO_PROXY=localhost,127.0.0.1,db,valkey
-      # - no_proxy=localhost,127.0.0.1,db,valkey
+      # - NO_PROXY=localhost,127.0.0.1,db,valkey,onlyoffice
+      # - no_proxy=localhost,127.0.0.1,db,valkey,onlyoffice
       # S3 Object Storage configuration (uncomment to use external MinIO at s3.company.local)
       # - OBJECTSTORE_S3_HOST=s3.company.local
       # - OBJECTSTORE_S3_PORT=443
@@ -61,8 +61,26 @@ services:
     networks:
       - nextcloud_network
 
+  onlyoffice:
+    image: ${DOCKER_PROXY:-}onlyoffice/documentserver:9.3
+    container_name: nextcloud_onlyoffice
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    volumes:
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_log:/var/log/onlyoffice
+      - onlyoffice_fonts:/usr/share/fonts
+    environment:
+      - JWT_SECRET=${ONLYOFFICE_JWT_SECRET}
+    networks:
+      - nextcloud_network
+
 volumes:
   db_data:
+  onlyoffice_data:
+  onlyoffice_log:
+  onlyoffice_fonts:
 
 networks:
   nextcloud_network:
